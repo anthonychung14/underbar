@@ -45,8 +45,16 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    if (Array.isArray(collection)) {
+      for (var i = 0; i < collection.length; i++)
+        iterator(collection[i], i, collection);
+    }
+    else {
+      for (var i in collection) {
+        iterator(collection[i], i, collection);
+      }
+    }
   };
-
   // Returns the index at which value can be found in the array, or -1 if value
   // is not present in the array.
   _.indexOf = function(array, target){
@@ -66,12 +74,21 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    var filtered = [];
+    _.each(collection, function(element) {
+      if (test(element)) {
+        filtered.push(element)
+        }
+      })
+    return filtered;
   };
-
   // Return all elements of an array that don't pass a truth test.
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    _.filter(collection, test) {
+      
+    }
   };
 
   // Produce a duplicate-free version of the array.
@@ -80,10 +97,15 @@
 
 
   // Return the results of applying an iterator to each element.
+  // map() is a useful primitive iteration function that works a lot
+  // like each(), but in addition to running the operation on all
+  // the members, it also maintains an array of results.
   _.map = function(collection, iterator) {
-    // map() is a useful primitive iteration function that works a lot
-    // like each(), but in addition to running the operation on all
-    // the members, it also maintains an array of results.
+    var newArray = [];
+    _.each(collection, function(element) {
+      newArray.push(iterator(element))
+    })
+    return newArray;
   };
 
   /*
@@ -103,6 +125,14 @@
       return item[key];
     });
   };
+
+  //pluck done with reduce
+  var pluck = function (array, property) {
+  return reduce(array, function(memo, current) {
+    memo.push(current[property]);
+    return memo;
+  }, [])
+}
 
   // Reduces an array or object to a single value by repetitively calling
   // iterator(accumulator, item) for each item. accumulator should be
@@ -125,6 +155,15 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
+    _.each(collection, function (element) {
+      if (startValue !== undefined) {
+        startValue = callback(startValue, element);
+      }
+      else {
+        startValue = element;
+      }
+    });
+    return startValue;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -278,6 +317,16 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    return reduce(array, function(memo, current) {
+      if (param) {
+        memo = memo.concat(current); 
+      } else if (Array.isArray(current) && param === undefined) {
+        memo = memo.concat(flatten(current));
+      } else {
+        memo.push(current);
+      }
+      return previous;
+    }, [])  
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
