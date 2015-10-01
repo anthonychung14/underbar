@@ -7,6 +7,7 @@
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    return val;
   };
 
   /**
@@ -37,6 +38,8 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
+    return n === undefined ? array[array.length-1] : 
+      array.slice( n > array.length ? 0 : array.length-n, array.length)
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -86,14 +89,21 @@
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    _.filter(collection, test) {
-      
-    }
+    return _.filter(collection, function(value) {
+      return !test(value)
+    })
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
-  };
+    //run a reduce function, see if there's a duplicate or not
+    return _.reduce(array, function(memo, current) {
+        if (_.indexOf(memo, current) < 0) {
+          memo.push(current)
+        }
+        return memo;
+      }, [])
+    };
 
 
   // Return the results of applying an iterator to each element.
@@ -156,14 +166,14 @@
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
     _.each(collection, function (element) {
-      if (startValue !== undefined) {
-        startValue = callback(startValue, element);
+      if (accumulator !== undefined) {
+        accumulator = iterator(accumulator, element);
       }
       else {
-        startValue = element;
+        accumulator = element;
       }
     });
-    return startValue;
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
