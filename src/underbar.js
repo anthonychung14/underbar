@@ -192,11 +192,29 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    return _.reduce(collection, function (memo, current) {
+      if (iterator === undefined) {
+        return current;
+      }
+      else if (!iterator(current)) {
+        memo = false;
+      }
+      return memo;
+    }, true)
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
+    return _.reduce(collection, function (memo, current) {
+      if (iterator === null && current === true) {
+        return current;  
+      }
+      else if (iterator(current)) {
+        return true;
+      }
+      return memo;  
+      }, false)
     // TIP: There's a very clever way to re-use every() here.
   };
 
@@ -327,15 +345,15 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
-    return reduce(array, function(memo, current) {
-      if (param) {
+    return _.reduce(nestedArray, function(memo, current) {
+      if (result) {
         memo = memo.concat(current); 
-      } else if (Array.isArray(current) && param === undefined) {
-        memo = memo.concat(flatten(current));
+      } else if (Array.isArray(current) && result === undefined) {
+        memo = memo.concat(_.flatten(current));
       } else {
         memo.push(current);
       }
-      return previous;
+      return memo;
     }, [])  
   };
 
